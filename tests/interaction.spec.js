@@ -1,0 +1,98 @@
+import { test, expect } from '@playwright/test'
+
+for (const width of [1440, 900, 600, 390, 320]) {
+  test(`readable, complete layout at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    const errors = []
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+    await expect(page.locator('h1')).toBeVisible()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    expect(await page.evaluate(() => document.fonts.check('300 80px Satoshi'))).toBe(true)
+    const tooSmall = await page.locator('h1,h2,h3,p,figcaption,a,button,dt,dd,summary').evaluateAll(nodes => nodes.filter(n => n.getClientRects().length && parseFloat(getComputedStyle(n).fontSize) < 16).map(n => n.textContent))
+    expect(tooSmall).toEqual([])
+    await expect(page.locator('.reference-image')).toHaveJSProperty('naturalWidth', 512)
+    await expect(page.locator('.neural-image')).toHaveJSProperty('naturalWidth', 512)
+    await page.locator('#limitations').scrollIntoViewIfNeeded()
+    await expect(page.locator('.detail-panels img').first()).toHaveJSProperty('naturalWidth', 160)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    expect(errors).toEqual([])
+  })
+}
+
+test('contents highlights the section reached by an anchor link', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.locator('.contents a[href="#limitations"]').click()
+  await expect(page.locator('.contents a[href="#limitations"]')).toHaveAttribute('aria-current', 'location')
+  const top = await page.locator('#limitations').evaluate(el => el.getBoundingClientRect().top)
+  expect(top).toBeGreaterThanOrEqual(80)
+  expect(top).toBeLessThan(180)
+})
+
+test('comparison divider responds to keyboard', async ({ page }) => {
+  await page.goto('/')
+  const slider = page.getByRole('slider', { name: 'Compare reference and neural rendering' })
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(slider).toHaveValue('51')
+  await expect(slider).toHaveAttribute('aria-valuetext', '51% reference image, 49% neural image')
+  await expect(page.locator('.neural-image')).toHaveCSS('clip-path', 'inset(0px 0px 0px 51%)')
+  await page.keyboard.press('Home')
+  await expect(slider).toHaveValue('0')
+  await page.keyboard.press('End')
+  await expect(slider).toHaveValue('100')
+})
+
+test('new demo plays, pauses and keeps correct full-sequence links', async ({ page, request }) => {
+  await page.goto('/')
+  const figure = page.locator('[data-demo="warehouse-1"]')
+  const video = figure.locator('video')
+  await video.scrollIntoViewIfNeeded()
+  await expect.poll(() => video.evaluate(v => v.readyState)).toBeGreaterThanOrEqual(2)
+  await expect.poll(() => video.evaluate(v => v.currentTime)).toBeGreaterThan(0)
+  await figure.getByRole('button', { name: 'Pause Warehouse / camera 1' }).click()
+  await expect(video).toHaveJSProperty('paused', true)
+  await figure.getByRole('button', { name: 'Play Warehouse / camera 1' }).click()
+  await expect(video).toHaveJSProperty('paused', false)
+  for (const cam of [1, 2]) {
+    const link = page.locator(`[data-demo="warehouse-${cam}"]`).getByRole('link', { name: 'Full sequence' })
+    await expect(link).toHaveAttribute('href', `/media/warehouse-${cam}-full.mp4`)
+    const response = await request.head(`/media/warehouse-${cam}-full.mp4`)
+    expect(response.status()).toBe(200)
+    expect(Number(response.headers()['content-length'])).toBeGreaterThan(1000000)
+    const range = await request.get(`/media/warehouse-${cam}-full.mp4`, { headers: { Range: 'bytes=0-1023' } })
+    expect(range.status()).toBe(206)
+  }
+})
+
+test('reduced motion does not autoplay but permits intentional playback', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const figure = page.locator('[data-demo="warehouse-1"]')
+  const video = figure.locator('video')
+  await video.scrollIntoViewIfNeeded()
+  await expect.poll(() => video.evaluate(v => v.readyState)).toBeGreaterThanOrEqual(2)
+  await expect(video).toHaveJSProperty('paused', true)
+  await figure.getByRole('button', { name: 'Play Warehouse / camera 1' }).click()
+  await expect(video).toHaveJSProperty('paused', false)
+  await expect(page.locator('.reading-progress')).toBeHidden()
+})
+
+test('navigation, scope, and earlier studies are usable', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Read the scope' }).click()
+  await expect(page).toHaveURL(/#scope$/)
+  await expect(page.locator('#scope h2')).toBeInViewport()
+  const broken = await page.locator('a[href^="#"]').evaluateAll(links => links.map(a => a.getAttribute('href').slice(1)).filter(id => id && !document.getElementById(id)))
+  expect(broken).toEqual([])
+  await page.locator('.earlier-studies summary').click()
+  await expect(page.locator('.legacy-studies')).toBeVisible()
+  await expect(page.locator('.legacy-studies video')).toHaveCount(2)
+  await expect(page.locator('#scope')).toContainText('training')
+  await expect(page.locator('#scope')).toContainText('reference-frame context')
+  await expect(page.locator('article')).not.toContainText('ControlLoRA')
+  await expect(page.locator('article')).not.toContainText('40k')
+  await expect(page.locator('article')).not.toContainText('4×')
+})

@@ -1,0 +1,6 @@
+Satoshi font family by Indian Type Foundry / Fontshare.
+Source: https://www.fontshare.com/fonts/satoshi
+License: ITF Free Font License, https://www.fontshare.com/licenses/itf-ffl
+Upright webfont files downloaded from the official Fontshare API/CDN.
+Files are unchanged. Source URLs and SHA-256 hashes are recorded in the internal docs/font-provenance.json.
+No ownership of these font designs is claimed by this project.
