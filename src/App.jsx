@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { DemoFigure, ImageComparison } from './components/ResearchMedia.jsx'
 import { assetUrl } from './assetUrl.js'
+import GBufferExplorer from './components/GBufferExplorer.jsx'
 
 const chapters = [
   ['context', 'The rendering problem'],
@@ -112,14 +113,18 @@ export default function App() {
               <DemoFigure id="warehouse-1" number="01" title="Through the warehouse doorway" subtitle="Warehouse / camera 1" />
               <DemoFigure id="warehouse-2" number="02" title="Along the storage aisle" subtitle="Warehouse / camera 2" />
               <p className="scope-caption">Scene-specific demonstrations on training camera trajectories, not an unseen-scene benchmark. The first frame uses reference-image context; later frames use the model’s generated history. Playback speed is not inference speed. <a href="#scope">Evaluation notes ↓</a></p>
-              <details className="earlier-studies">
-                <summary>Earlier studies: office and kitchen <span aria-hidden="true">+</span></summary>
+              <section className="earlier-studies" aria-labelledby="earlier-studies-title">
+                <h3 id="earlier-studies-title">Office and kitchen studies</h3>
                 <p>Separate scene-specific models from earlier experiments. These edited excerpts show an unlit BaseColor input on the left and the neural output on the right; they are not evidence of one model generalizing across environments.</p>
-                <div className="legacy-studies">
-                  <figure><video controls muted playsInline preload="none" src={assetUrl('legacy/office.mp4')} aria-label="Earlier office study: BaseColor left and neural output right" /><figcaption>Office / BaseColor → neural appearance</figcaption></figure>
-                  <figure><video controls muted playsInline preload="none" src={assetUrl('legacy/kitchen.mp4')} aria-label="Earlier kitchen study: BaseColor left and neural output right" /><figcaption>Kitchen / BaseColor → neural appearance</figcaption></figure>
-                </div>
-              </details>
+                <DemoFigure id="office" number="03" title="Learning the office’s appearance" subtitle="Office / earlier study"
+                  source="legacy/office.mp4" poster="legacy/office-poster.jpg" leftLabel="BaseColor input" durationLabel="5-SECOND EXCERPT"
+                  linkHref="legacy/office.mp4" linkLabel="Open clip"
+                  caption="An earlier scene-specific study. Left: unlit BaseColor input. Right: neural appearance. This five-second edited excerpt repeats; playback speed is not inference speed." />
+                <DemoFigure id="kitchen" number="04" title="Surfaces and lighting in the kitchen" subtitle="Kitchen / earlier study"
+                  source="legacy/kitchen.mp4" poster="legacy/kitchen-poster.jpg" leftLabel="BaseColor input" durationLabel="5-SECOND EXCERPT"
+                  linkHref="legacy/kitchen.mp4" linkLabel="Open clip"
+                  caption="An earlier scene-specific study. Left: unlit BaseColor input. Right: neural appearance. This five-second edited excerpt repeats; playback speed is not inference speed." />
+              </section>
             </section>
 
             <section id="approach" className="chapter">
@@ -128,6 +133,7 @@ export default function App() {
                 <p>The simulator already knows which surfaces are visible, their orientation, distance, and material properties. We use those structured render passes, often called G-buffers, to condition a generative image model.</p>
                 <p>The model learns a relationship between those inputs and reference images. During a rollout, it also uses the previous generated image as temporal context. This gives it both a description of the current scene and information about how the preceding frame looked.</p>
               </div>
+              <GBufferExplorer />
               <div className="method-flow" role="group" aria-label="High-level rendering pipeline">
                 <div><span className="eyebrow">SCENE</span><h3>Explicit structure</h3><p>Visible surfaces, depth, orientation, and materials.</p></div>
                 <span className="flow-arrow" aria-hidden="true">→</span>
@@ -155,7 +161,7 @@ export default function App() {
                 <p>A warehouse can look convincing at a glance while losing information a robot may need. In the matched detail below, the markings on a wooden crate are less distinct in the neural image than in the reference. Preserving the room’s overall appearance does not guarantee that every edge or small object remains reliable.</p>
               </div>
               <figure className="detail-figure">
-                <div className="figure-topline"><span>FIGURE 03 / A CLOSER LOOK</span><span>WAREHOUSE / FRAME 600</span></div>
+                <div className="figure-topline"><span>FIGURE 05 / A CLOSER LOOK</span><span>WAREHOUSE / FRAME 600</span></div>
                 <div className="detail-panels">
                   <div><div className="panel-label">UE5 reference</div><img src={assetUrl('media/detail-reference.png')} alt="UE5 reference crop: wooden crate markings and nearby barrel, camera 1, frame 600" width="160" height="160" loading="lazy" /></div>
                   <div><div className="panel-label accent">NeuraShade</div><img src={assetUrl('media/detail-neural.png')} alt="Matching NeuraShade crop with less-distinct wooden crate markings" width="160" height="160" loading="lazy" /></div>
@@ -180,7 +186,7 @@ export default function App() {
                   <div><dt>Reference</dt><dd>Unreal Engine rendered images, not real-world photographs.</dd></div>
                   <div><dt>Evaluation scope</dt><dd>Warehouse camera trajectories included in scene-specific training. These are qualitative reconstructions, not held-out generalization results.</dd></div>
                   <div><dt>Sequence context</dt><dd>The initial image uses reference-frame context. Subsequent images are generated autoregressively using the model’s own history.</dd></div>
-                  <div><dt>Presentation</dt><dd>Two 12-second excerpts at 24 fps, each with a link to its full 998-frame sequence. The excerpts remove letterboxing from both panels; full sequences retain it. No temporal smoothing or color correction.</dd></div>
+                  <div><dt>Presentation</dt><dd>Two 12-second warehouse excerpts at 24 fps, each with a link to its full 998-frame sequence. Earlier office and kitchen studies use five-second edited clips. The warehouse excerpts remove letterboxing from both panels; full warehouse sequences retain it. No temporal smoothing or color correction is applied to the warehouse clips.</dd></div>
                   <div><dt>What is not claimed</dt><dd>Real-time inference, arbitrary-scene rendering, or demonstrated improvement in real-robot performance.</dd></div>
                 </dl>
               </div>

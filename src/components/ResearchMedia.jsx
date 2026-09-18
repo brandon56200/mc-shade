@@ -14,7 +14,16 @@ export function ImageComparison() {
   </div>
 }
 
-export function DemoFigure({ id, number, title, subtitle }) {
+export function DemoFigure({
+  id, number, title, subtitle,
+  source = `media/${id}-loop.mp4`,
+  poster = `media/${id}-poster.jpg`,
+  leftLabel = 'UE5 reference',
+  durationLabel = '12-SECOND EXCERPT',
+  linkHref = `media/${id}-full.mp4`,
+  linkLabel = 'Full sequence',
+  caption = 'Frames 200–487 from a 998-frame autoregressive rollout. Reference and generated images share the same camera and frame. Playback restarts after frame 487; the loop is not seamless.',
+}) {
   const videoRef = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [failed, setFailed] = useState(false)
@@ -53,11 +62,11 @@ export function DemoFigure({ id, number, title, subtitle }) {
     }
   }
   return <figure className="demo-figure" data-demo={id}>
-    <div className="figure-topline"><span>FIGURE {number} / {subtitle.toUpperCase()}</span><span>12-SECOND EXCERPT</span></div>
-    <div className="demo-labels"><span>UE5 reference</span><span className="accent">NeuraShade</span></div>
-    <video ref={videoRef} muted loop playsInline preload="metadata" src={assetUrl(`media/${id}-loop.mp4`)} poster={assetUrl(`media/${id}-poster.jpg`)} aria-label={`${subtitle}: reference left, NeuraShade right`} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)} />
-    {failed && <p role="status" className="media-error">This excerpt could not load. Try the full sequence below.</p>}
-    <div className="demo-toolbar"><h3>{title}</h3><div><button className="button button-small" type="button" onClick={toggle} aria-label={`${playing ? 'Pause' : 'Play'} ${subtitle}`} disabled={failed}><span aria-hidden="true">{playing ? 'Ⅱ' : '▷'}</span>{playing ? 'Pause' : 'Play'}</button><a className="text-link" href={assetUrl(`media/${id}-full.mp4`)} target="_blank" rel="noreferrer">Full sequence ↗</a></div></div>
-    <figcaption>Frames 200–487 from a 998-frame autoregressive rollout. Reference and generated images share the same camera and frame. Playback restarts after frame 487; the loop is not seamless.</figcaption>
+    <div className="figure-topline"><span>FIGURE {number} / {subtitle.toUpperCase()}</span><span>{durationLabel}</span></div>
+    <div className="demo-labels"><span>{leftLabel}</span><span className="accent">NeuraShade</span></div>
+    <video ref={videoRef} muted loop playsInline preload="metadata" src={assetUrl(source)} poster={assetUrl(poster)} aria-label={`${subtitle}: ${leftLabel} left, NeuraShade right`} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)} />
+    {failed && <p role="status" className="media-error">This excerpt could not load. Try opening the video below.</p>}
+    <div className="demo-toolbar"><h3>{title}</h3><div><button className="button button-small" type="button" onClick={toggle} aria-label={`${playing ? 'Pause' : 'Play'} ${subtitle}`} disabled={failed}><span aria-hidden="true">{playing ? 'Ⅱ' : '▷'}</span>{playing ? 'Pause' : 'Play'}</button><a className="text-link" href={assetUrl(linkHref)} target="_blank" rel="noreferrer">{linkLabel} ↗</a></div></div>
+    <figcaption>{caption}</figcaption>
   </figure>
 }
