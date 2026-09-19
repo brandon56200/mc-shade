@@ -1,8 +1,8 @@
-# NeuraShade research note
+# MC-Shade research note
 
 An interactive research article on learned rendering for physical AI, with warehouse demonstrations and a matched detail comparison.
 
-Live site: https://brandon56200.github.io/neurashade-report/
+Live site: https://brandon56200.github.io/mc-shade/
 
 ## Develop
 
@@ -22,11 +22,11 @@ npm run build
 
 Browser tests use installed Chrome. Run the dev server, then `npm test`. Set `BLOG_TEST_URL` to change the local test origin.
 
-For a GitHub Pages path check, build with `npm run build -- --base=/neurashade-report/`, serve it beneath that path, and run `PAGES_TEST_URL=<full-page-url> npx playwright test tests/pages.spec.js`.
+For a GitHub Pages path check, build with `npm run build -- --base=/mc-shade/`, serve it beneath that path, and run `PAGES_TEST_URL=<full-page-url> npx playwright test tests/pages.spec.js`.
 
 ## Publish
 
-Pushes to `main` build and deploy the site using GitHub Actions. Public image and video references use Vite's configured base path so the project works at `/neurashade-report/` as well as at a local root URL.
+Pushes to `main` build and deploy the site using GitHub Actions. Public image and video references use Vite's configured base path so the project works at `/mc-shade/` as well as at a local root URL.
 
 Only the article, website source, tests, and displayed media are included. Training code, model weights, internal experiment records, and working notes are not part of this repository.
 

@@ -51,7 +51,7 @@ export default function App() {
       <header className="site-header">
         <div className="nav-wrap">
           <a className="wordmark" href="https://www.midcentury.xyz/" aria-label="Midcentury home"><img src={assetUrl('midcentury-logo-white.svg')} width="144" height="38" alt="Midcentury" /></a>
-          <a className="report-brand" href="#top">/ NeuraShade</a>
+          <a className="report-brand" href="#top">/ MC-Shade</a>
           <nav aria-label="Main navigation">
             <a href="#demonstrations">Demonstrations</a>
             <a href="#limitations">Limitations</a>
@@ -75,7 +75,7 @@ export default function App() {
           <figure className="hero-figure">
             <div className="figure-topline"><span>WAREHOUSE / FRAME 600</span><span className="accent">COMPARE THE IMAGE</span></div>
             <ImageComparison />
-            <figcaption>Same camera. Same scene. Drag the divider to compare the reference render with NeuraShade.</figcaption>
+            <figcaption>Same camera. Same scene. Drag the divider to compare the reference render with MC-Shade.</figcaption>
           </figure>
         </section>
 
@@ -108,7 +108,7 @@ export default function App() {
             <section id="demonstrations" className="chapter">
               <ChapterHeading number="02" label="DEMONSTRATIONS">A familiar scene.<br /><strong>A learned image.</strong></ChapterHeading>
               <div className="prose">
-                <p>These warehouse sequences compare an Unreal Engine reference render with NeuraShade, frame by frame. Watch the doorway, shelves, and windows as the camera moves. The model follows the scene layout and much of its lighting, while small details remain softer than the reference.</p>
+                <p>These warehouse sequences compare an Unreal Engine reference render with MC-Shade, frame by frame. Watch the doorway, shelves, and windows as the camera moves. The model follows the scene layout and much of its lighting, while small details remain softer than the reference.</p>
               </div>
               <DemoFigure id="warehouse-1" number="01" title="Through the warehouse doorway" subtitle="Warehouse / camera 1" />
               <DemoFigure id="warehouse-2" number="02" title="Along the storage aisle" subtitle="Warehouse / camera 2" />
@@ -137,7 +137,7 @@ export default function App() {
               <div className="method-flow" role="group" aria-label="High-level rendering pipeline">
                 <div><span className="eyebrow">SCENE</span><h3>Explicit structure</h3><p>Visible surfaces, depth, orientation, and materials.</p></div>
                 <span className="flow-arrow" aria-hidden="true">→</span>
-                <div className="method-center"><span className="eyebrow">NEURASHADE</span><h3>Learned appearance</h3><p>Structured inputs and previous-frame context.</p></div>
+                <div className="method-center"><span className="eyebrow">MC-SHADE</span><h3>Learned appearance</h3><p>Structured inputs and previous-frame context.</p></div>
                 <span className="flow-arrow" aria-hidden="true">→</span>
                 <div><span className="eyebrow">OBSERVATION</span><h3>A rendered frame</h3><p>A prediction of the scene’s visual appearance.</p></div>
               </div>
@@ -164,7 +164,7 @@ export default function App() {
                 <div className="figure-topline"><span>FIGURE 05 / A CLOSER LOOK</span><span>WAREHOUSE / FRAME 600</span></div>
                 <div className="detail-panels">
                   <div><div className="panel-label">UE5 reference</div><img src={assetUrl('media/detail-reference.png')} alt="UE5 reference crop: wooden crate markings and nearby barrel, camera 1, frame 600" width="160" height="160" loading="lazy" /></div>
-                  <div><div className="panel-label accent">NeuraShade</div><img src={assetUrl('media/detail-neural.png')} alt="Matching NeuraShade crop with less-distinct wooden crate markings" width="160" height="160" loading="lazy" /></div>
+                  <div><div className="panel-label accent">MC-Shade</div><img src={assetUrl('media/detail-neural.png')} alt="Matching MC-Shade crop with less-distinct wooden crate markings" width="160" height="160" loading="lazy" /></div>
                 </div>
                 <figcaption>Matching 160 × 160 crops from camera 1, frame 600, displayed at the same scale. No sharpening or restoration applied.</figcaption>
               </figure>
@@ -201,7 +201,7 @@ export default function App() {
           </div>
         </section>
       </main>
-      <footer className="page-width footer"><a href="https://www.midcentury.xyz/" aria-label="Midcentury website"><img src={assetUrl('midcentury-logo-white.svg')} width="144" height="38" alt="Midcentury" /></a><p>NeuraShade / Research note / September 2026</p><a href="#top">Back to top ↑</a></footer>
+      <footer className="page-width footer"><a href="https://www.midcentury.xyz/" aria-label="Midcentury website"><img src={assetUrl('midcentury-logo-white.svg')} width="144" height="38" alt="Midcentury" /></a><p>MC-Shade / Research note / September 2026</p><a href="#top">Back to top ↑</a></footer>
     </>
   )
 }
