@@ -1,0 +1,39 @@
+.scroll-story{position:relative}
+.scroll-story[data-guided=true]{height:calc(100svh - 112px + var(--story-distance))}
+.scroll-story-pin{position:relative}
+.scroll-story[data-guided=true]>.scroll-story-pin{position:sticky;top:96px;height:calc(100svh - 112px);display:flex;flex-direction:column;justify-content:center}
+.scroll-story-content{width:100%;min-width:0}
+.story-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;color:var(--muted);font-size:16px;line-height:24px}
+.story-controls>div{display:flex;gap:24px;flex-wrap:wrap}
+.story-controls button{background:none;border:0;border-bottom:1px solid var(--border);min-height:44px;padding:8px 0;color:var(--foreground)}
+.story-controls button:hover{color:var(--accent);border-color:var(--accent)}
+.story-progress{height:2px;background:var(--border);overflow:hidden}
+/* Eligibility must measure the same controls/bar space in either mode. */
+.scroll-story[data-guided=false] .story-controls>div,.scroll-story[data-guided=false] .story-progress{visibility:hidden}
+.story-progress span{display:block;height:100%;background:var(--accent);transform-origin:left}
+.story-end{position:absolute;bottom:0;width:1px;height:1px;outline:none}
+.scroll-story[data-story=gbuffers]{margin-block:40px}
+.scroll-story[data-story=gbuffers] .gbuffer-explorer{margin-block:0}
+.scroll-story[data-story=renderer] .hero{position:relative;min-height:0;padding-block:32px;gap:48px}
+.scroll-story[data-story=renderer] .hero-figure{width:100%;max-width:540px;justify-self:center;transform:translateX(calc(var(--renderer-shift, 0px) * var(--focus, 0)))}
+.scroll-story[data-story=renderer] .story-controls,.scroll-story[data-story=renderer] .story-progress{margin-inline:var(--gutter)}
+.scroll-story[data-story=renderer] .hero h1{font-size:clamp(48px,4.8vw,80px);line-height:1.1}
+.scroll-story[data-story=renderer] .hero-deck{margin-top:24px}
+.scroll-story[data-story=renderer] .hero-actions{margin-block:24px}
+.scroll-story[data-story=renderer] .hero-figure figcaption{max-width:none}
+@media(min-width:901px) and (max-height:850px){
+ .scroll-story[data-story=renderer] .hero-figure{max-width:380px}
+ .scroll-story[data-story=renderer] .hero h1{font-size:56px}
+ .scroll-story[data-story=renderer] .hero{padding-block:8px}
+ .scroll-story[data-story=renderer] .hero-figure .figure-topline{padding-bottom:16px}
+ .story-controls{min-height:48px}
+ .scroll-story[data-story=gbuffers] .gbuffer-explorer>.figure-topline{padding:16px}
+ .scroll-story[data-story=gbuffers] .gbuffer-layout{padding:16px}
+ .scroll-story[data-story=gbuffers] .gbuffer-image-label{padding:8px 16px}
+ .scroll-story[data-story=gbuffers] .gbuffer-selectors{padding:0 16px 16px}
+ .scroll-story[data-story=gbuffers] .gbuffer-selectors img{max-height:60px;object-fit:contain}
+ .scroll-story[data-story=gbuffers] .gbuffer-explorer>figcaption{padding:0 16px 16px}
+}
+@media(max-width:900px){.scroll-story[data-story=renderer] .hero{padding-block:48px}.story-controls{flex-wrap:wrap;gap:8px;padding-block:12px}}
+@media(prefers-reduced-motion:reduce){.scroll-story[data-guided=true]{height:auto}.scroll-story[data-guided=true]>.scroll-story-pin{position:static;height:auto}.story-progress{visibility:hidden}}
+@media print{.scroll-story .hero-copy{opacity:1!important}.scroll-story .hero-figure{transform:none!important}.scroll-story[data-guided=true]{height:auto}.scroll-story[data-guided=true]>.scroll-story-pin{position:static;height:auto;display:block}.story-controls,.story-progress{display:none}}

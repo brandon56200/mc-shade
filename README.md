@@ -2,7 +2,9 @@
 
 An interactive research article on learned rendering for physical AI, with warehouse demonstrations and a matched detail comparison.
 
-Live site: https://brandon56200.github.io/mc-shade/
+Live site: https://mc-shade.vercel.app
+
+GitHub Pages mirror: https://brandon56200.github.io/mc-shade/
 
 ## Develop
 
@@ -29,6 +31,18 @@ For a GitHub Pages path check, build with `npm run build -- --base=/mc-shade/`, 
 Pushes to `main` build and deploy the site using GitHub Actions. Public image and video references use Vite's configured base path so the project works at `/mc-shade/` as well as at a local root URL.
 
 Only the article, website source, tests, and displayed media are included. Training code, model weights, internal experiment records, and working notes are not part of this repository.
+
+## Scroll presentation
+
+The comparison moves into the center of the viewport and sweeps from reference to neural output as the reader scrolls. The G-buffer explorer pins in the article and steps through the five captured passes. Both use native document scrolling, with no wheel interception or scroll lock.
+
+- Dragging/keyboard input or selecting a pass pauses automatic changes; **Resume scroll tour** restores them.
+- **Skip tour** exits the pinned section and moves keyboard focus past it.
+- Reduced-motion preferences and viewports too small to fit the whole presentation retain the manual controls without the long scroll sections.
+- `src/components/ScrollStory.jsx` owns scroll progress and viewport-fit detection. The renderer has 140svh of scroll travel; G-buffers have 220svh.
+- `tests/scroll-story.spec.js` covers forward/reverse scrolling, centering, manual input, skip, laptop fit, mobile, reduced motion, and print.
+
+Deploy the existing linked Vercel project with `vercel deploy --prod --yes --scope brandon56200s-projects` after validation. CLI deployments are separate from the GitHub Pages workflow.
 
 ## Demonstration scope
 

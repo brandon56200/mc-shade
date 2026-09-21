@@ -9,7 +9,7 @@ test('GitHub Pages subpath resolves every displayed asset and plays both demos',
   await expect(page.locator('h1')).toContainText('Neural rendering')
   for (const image of await page.locator('img').all()) {
     await image.scrollIntoViewIfNeeded()
-    await expect(image).toHaveAttribute('src', /^\/neurashade-report\//)
+    await expect(image).toHaveAttribute('src', /^\/mc-shade\//)
     await expect.poll(() => image.evaluate(i => i.complete && i.naturalWidth > 0)).toBe(true)
   }
   await page.evaluate(() => document.fonts.ready)
@@ -17,12 +17,12 @@ test('GitHub Pages subpath resolves every displayed asset and plays both demos',
   for (const cam of [1, 2]) {
     const figure = page.locator(`[data-demo="warehouse-${cam}"]`)
     const video = figure.locator('video')
-    await expect(video).toHaveAttribute('src', `/neurashade-report/media/warehouse-${cam}-loop.mp4`)
+    await expect(video).toHaveAttribute('src', `/mc-shade/media/warehouse-${cam}-loop.mp4`)
     await video.scrollIntoViewIfNeeded()
     await video.evaluate(v => v.play())
     await expect.poll(() => video.evaluate(v => v.currentTime)).toBeGreaterThan(0.1)
     await video.evaluate(v => v.pause())
-    await expect(figure.getByRole('link', { name: 'Full sequence' })).toHaveAttribute('href', `/neurashade-report/media/warehouse-${cam}-full.mp4`)
+    await expect(figure.getByRole('link', { name: 'Full sequence' })).toHaveAttribute('href', `/mc-shade/media/warehouse-${cam}-full.mp4`)
   }
   expect(errors).toEqual([])
 })

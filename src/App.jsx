@@ -2,6 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { DemoFigure, ImageComparison } from './components/ResearchMedia.jsx'
 import { assetUrl } from './assetUrl.js'
 import GBufferExplorer from './components/GBufferExplorer.jsx'
+import ScrollStory from './components/ScrollStory.jsx'
+
+function comparisonSweep(progress) {
+  const stops = [[0, 50], [0.2, 100], [0.3, 100], [0.75, 0], [0.85, 0], [1, 50]]
+  const i = Math.max(1, stops.findIndex(([p]) => p >= progress))
+  const [a, start] = stops[i - 1], [b, end] = stops[i]
+  const t = Math.max(0, Math.min(1, (progress - a) / (b - a)))
+  return Math.round(start + (end - start) * t * t * (3 - 2 * t))
+}
 
 const chapters = [
   ['context', 'The rendering problem'],
@@ -61,8 +70,8 @@ export default function App() {
       </header>
 
       <main id="top">
-        <section className="hero page-width" aria-labelledby="hero-title">
-          <div className="hero-copy">
+        <ScrollStory id="renderer">{({ progress, enabled, playing, takeControl }) => <section className="hero page-width" aria-labelledby="hero-title">
+          <div className="hero-copy" inert={enabled && progress >= 0.18} style={{ opacity: enabled ? Math.max(0, 1 - progress / 0.18) : 1 }}>
             <p className="eyebrow"><span className="status-dot" /> MIDCENTURY / RESEARCH</p>
             <h1 id="hero-title">Neural rendering<br /><strong>for physical AI.</strong></h1>
             <p className="hero-deck">Learning the appearance of a simulated world, while keeping its structure under our control.</p>
@@ -72,12 +81,12 @@ export default function App() {
             </div>
             <p className="byline">Brandon Samaroo <span aria-hidden="true">/</span> September 2026</p>
           </div>
-          <figure className="hero-figure">
+          <figure className="hero-figure" style={{ '--focus': enabled ? Math.min(1, progress / 0.18) : 0 }}>
             <div className="figure-topline"><span>WAREHOUSE / FRAME 600</span><span className="accent">COMPARE THE IMAGE</span></div>
-            <ImageComparison />
-            <figcaption>Same camera. Same scene. Drag the divider to compare the reference render with MC-Shade.</figcaption>
+            <ImageComparison autoSplit={playing ? comparisonSweep(progress) : undefined} onInteract={takeControl} />
+            <figcaption>Same camera. Same frame. Drag to compare UE5 with MC-Shade.</figcaption>
           </figure>
-        </section>
+        </section>}</ScrollStory>
 
         <div className="opening-band">
           <div className="page-width opening-grid">

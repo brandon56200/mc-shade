@@ -13,7 +13,7 @@ test('office and kitchen use the same accessible figure treatment as warehouse',
     const figure = page.locator(`[data-demo="${id}"]`)
     await expect(figure).toHaveClass('demo-figure')
     await expect(figure.locator('.figure-topline')).toContainText('5-SECOND EXCERPT')
-    await expect(figure.locator('.demo-labels')).toHaveText('BaseColor inputNeuraShade')
+    await expect(figure.locator('.demo-labels')).toHaveText('BaseColor inputMC-Shade')
     await expect(figure.locator('figcaption')).toContainText('five-second edited excerpt')
     await expect(figure.locator('figcaption')).toContainText('playback speed is not inference speed')
     const video = figure.locator('video')

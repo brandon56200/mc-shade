@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { assetUrl } from '../assetUrl.js'
 import './GBufferExplorer.css'
+import ScrollStory from './ScrollStory.jsx'
 
 const passes = [
   { name: 'BaseColor', file: 'basecolor', role: 'Surface color', title: 'Color before lighting.', description: 'The material’s base color, without the final scene lighting. It tells the model which visible surfaces have which colors.', note: 'This is an input pass, not the finished render.' },
@@ -11,7 +12,14 @@ const passes = [
 ]
 
 export default function GBufferExplorer() {
-  const [selected, setSelected] = useState(0)
+  return <ScrollStory id="gbuffers" distance={220}>{({ progress, playing, takeControl }) =>
+    <GBufferFigure autoSelected={playing ? Math.min(4, Math.floor(progress * 5)) : undefined} onInteract={takeControl} />
+  }</ScrollStory>
+}
+
+function GBufferFigure({ autoSelected, onInteract }) {
+  const [manualSelected, setSelected] = useState(0)
+  const selected = autoSelected ?? manualSelected
   const pass = passes[selected]
   return <figure className="gbuffer-explorer" aria-labelledby="gbuffer-title">
     <div className="figure-topline"><span id="gbuffer-title">INPUT STUDY / G-BUFFERS</span><span>WAREHOUSE / FRAME 600</span></div>
@@ -20,15 +28,17 @@ export default function GBufferExplorer() {
         <img src={assetUrl(`gbuffers/${pass.file}.png`)} alt={`${pass.name} G-buffer from warehouse camera 1, frame 600`} width="512" height="288" loading="lazy" />
         <div className="gbuffer-image-label"><span>{pass.name}</span><span>Captured input</span></div>
       </div>
-      <div className="gbuffer-explanation" aria-live="polite" aria-atomic="true">
-        <p className="eyebrow">0{selected + 1} / {pass.role}</p>
-        <h3>{pass.title}</h3>
-        <p>{pass.description}</p>
-        <p className="gbuffer-note">{pass.note}</p>
+      <div className="gbuffer-explanations" aria-live={autoSelected === undefined ? "polite" : "off"} aria-atomic="true">
+        {passes.map((item, i) => <div key={item.file} className="gbuffer-explanation" aria-hidden={selected !== i}>
+          <p className="eyebrow">0{i + 1} / {item.role}</p>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <p className="gbuffer-note">{item.note}</p>
+        </div>)}
       </div>
     </div>
     <div className="gbuffer-selectors" role="group" aria-label="Select a G-buffer pass">
-      {passes.map((item, i) => <button type="button" key={item.file} aria-pressed={selected === i} aria-controls="gbuffer-preview" onClick={() => setSelected(i)}>
+      {passes.map((item, i) => <button type="button" key={item.file} aria-pressed={selected === i} aria-controls="gbuffer-preview" onClick={() => { setSelected(i); onInteract() }}>
         <img src={assetUrl(`gbuffers/${item.file}.png`)} width="512" height="288" loading="lazy" alt="" />
         <span>{item.name}</span>
       </button>)}
